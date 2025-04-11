@@ -4,13 +4,15 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +20,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'firstName',
+        'lastName',
+        'bio',
         'email',
+        'phoneNumber',
         'password',
+        'role'
     ];
 
     /**
@@ -44,5 +50,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    /**
+     * Terres appartenant à cet utilisateur (si c'est un propriétaire).
+     */
+    public function lands(): HasMany
+    {
+        return $this->hasMany(Land::class);
+    }
+    /**
+     * Notifications reçues par l'utilisateur.
+     */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
+    /**
+     * Candidatures envoyées par un travailleur.
+     */
+    public function candidatures(): HasMany
+    {
+        return $this->hasMany(Candidature::class);
     }
 }
