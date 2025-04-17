@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('title');
             $table->enum('type', ['Semis', 'Arrosage', 'Fertilisation', 'Recolte', 'Traitement']);
             $table->boolean('isDone')->default(false);
-            $table->date('interventionDate');
             $table->float('productQuantity');
             $table->text('description');
             $table->foreignId('land_id')->constrained('lands')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

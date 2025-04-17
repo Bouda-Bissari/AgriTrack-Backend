@@ -10,7 +10,6 @@ class Land extends Model
 {
     protected $fillable = [
         'name',
-        'date',
         'city',
         'cultureType',
         'area',

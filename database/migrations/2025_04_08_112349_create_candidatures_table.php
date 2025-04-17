@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('motivationLetter');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // worker
             $table->foreignId('intervention_id')->constrained('interventions')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
