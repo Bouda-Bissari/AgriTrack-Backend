@@ -82,7 +82,23 @@ class LandController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = Auth::user();
+
+        $land = Land::find($id);
+
+        if (!$land) {
+            return response()->json(['message' => 'Parcelle non trouvée.'], 404);
+        }
+
+        // Vérifier que la parcelle appartient à l'utilisateur connecté
+        if ($land->user_id !== $user->id) {
+            return response()->json(['message' => 'Accès interdit à cette parcelle.'], 403);
+        }
+
+        return response()->json([
+            'message' => 'Parcelle récupérée avec succès.',
+            'data' => $land
+        ]);
     }
 
     /**
