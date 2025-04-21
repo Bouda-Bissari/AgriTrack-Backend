@@ -35,29 +35,15 @@ class LandController extends Controller
      */
     public function store(AddLandRequest $request)
     {
-        /**
-         * je dois vérifier que l'utilisateur est connecté et qu'il a le rôle 'landOwner'
-         * je decommenterai le code une fois que l'auth sera terminée avec les rôles
-         */
-
-        /*
-        // Vérifier que l'utilisateur est connecté
         $user = Auth::user();
 
         if (!$user) {
             return response()->json(['message' => 'Utilisateur non connecté.'], 401);
         }
 
-        // Vérifier si l'utilisateur a le rôle 'landOwner'
-        if (!$user->hasRole('landOwner')) {
+        if ($user->role !== 'landOwner') {
             return response()->json(['message' => 'Accès interdit. Vous devez être un propriétaire de terre.'], 403);
         }
-
-        // Vérifier si l'utilisateur existe bien
-        $userToCheck = User::find($request->user_id);
-        if (!$userToCheck) {
-            return response()->json(['message' => 'Utilisateur non trouvé.'], 404);
-        }*/
 
         $data = $request->validated();
 
