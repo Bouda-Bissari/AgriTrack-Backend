@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddLandRequest;
+use App\Http\Requests\UpdateLandRequest;
 use App\Models\Land;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class LandController extends Controller
@@ -77,9 +79,43 @@ class LandController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateLandRequest $request, int $id)
     {
-        //
+        $user = Auth::user();
+
+        $land = Land::find($id);
+
+        if (!$land) {
+            return response()->json(['message' => 'Parcelle non trouvée.'], 404);
+        }
+
+        if ($land->user_id !== $user->id) {
+            return response()->json(['message' => 'Accès interdit. Cette parcelle ne vous appartient pas.'], 403);
+        }
+
+        $data = $request->validated();
+
+        // Si un nouveau document est uploadé
+        if ($request->hasFile('ownershipdoc')) {
+            // Supprimer l'ancien fichier s'il existe
+            if ($land->ownershipdoc && Storage::disk('public')->exists($land->ownershipdoc)) {
+                Storage::disk('public')->delete($land->ownershipdoc);
+            }
+
+            // Enregistrer le nouveau fichier
+            $originalName = $request->file('ownershipdoc')->getClientOriginalName();
+            $filename = time() . '_' . uniqid() . '_' . $originalName;
+            $path = $request->file('ownershipdoc')->storeAs('documents', $filename, 'public');
+
+            $data['ownershipdoc'] = $path;
+        }
+
+        $land->update($data);
+
+        return response()->json([
+            'message' => 'Parcelle mise à jour avec succès.',
+            'data' => $land
+        ]);
     }
 
     /**
