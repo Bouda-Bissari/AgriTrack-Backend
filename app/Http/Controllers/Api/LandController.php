@@ -90,7 +90,6 @@ class LandController extends Controller
             return response()->json(['message' => 'Parcelle non trouvée.'], 404);
         }
 
-        // Vérifier que la parcelle appartient à l'utilisateur connecté
         if ($land->user_id !== $user->id) {
             return response()->json(['message' => 'Accès interdit à cette parcelle.'], 403);
         }
