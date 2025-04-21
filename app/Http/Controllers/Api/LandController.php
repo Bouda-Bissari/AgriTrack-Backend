@@ -80,7 +80,7 @@ class LandController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
         $user = Auth::user();
 
@@ -111,8 +111,22 @@ class LandController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        $user = Auth::user();
+
+        $land = Land::find($id);
+
+        if (!$land) {
+            return response()->json(['message' => 'Parcelle non trouvée.'], 404);
+        }
+
+        if ($land->user_id !== $user->id) {
+            return response()->json(['message' => 'Accès interdit. Cette parcelle ne vous appartient pas.'], 403);
+        }
+
+        $land->delete();
+
+        return response()->json(['message' => 'Parcelle supprimée avec succès.']);
     }
 }
