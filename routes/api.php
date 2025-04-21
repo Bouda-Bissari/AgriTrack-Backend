@@ -19,4 +19,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/lands', [LandController::class, 'index']);
     Route::get('/lands/{id}', [LandController::class, 'show']);
     Route::delete('/lands/{id}', [LandController::class, 'destroy']);
+    Route::put('/lands/{id}', [LandController::class, 'update']);
 });
