@@ -16,4 +16,6 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/lands', [LandController::class, 'store']);
+    Route::get('/lands', [LandController::class, 'index']);
+    Route::get('/lands/{id}', [LandController::class, 'show']);
 });
