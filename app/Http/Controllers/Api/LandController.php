@@ -16,7 +16,18 @@ class LandController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non connecté.'], 401);
+        }
+
+        $lands = Land::where('user_id', $user->id)->get(); // Récupérer les parcelles de l'utilisateur connecté
+
+        return response()->json([
+            'message' => 'Parcelles de l’utilisateur récupérées avec succès.',
+            'data' => $lands
+        ]);
     }
 
     /**
