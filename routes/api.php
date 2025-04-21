@@ -14,4 +14,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/lands', [LandController::class, 'store'])->withoutMiddleware('auth:api');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/lands', [LandController::class, 'store']);
+});
