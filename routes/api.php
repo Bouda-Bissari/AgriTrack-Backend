@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\InterventionController;
 use App\Http\Controllers\Api\LandController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -15,9 +16,17 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    /**
+     * Lands Endpoints.
+     */
     Route::post('/lands', [LandController::class, 'store']);
     Route::get('/lands', [LandController::class, 'index']);
     Route::get('/lands/{id}', [LandController::class, 'show']);
     Route::delete('/lands/{id}', [LandController::class, 'destroy']);
     Route::put('/lands/{id}', [LandController::class, 'update']);
+
+    /**
+     * Interventions Endpoints.
+     */
+    Route::post('/intervention', [InterventionController::class, 'store']);
 });
