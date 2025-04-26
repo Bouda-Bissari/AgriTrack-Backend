@@ -29,4 +29,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
      * Interventions Endpoints.
      */
     Route::post('/intervention', [InterventionController::class, 'store']);
+    Route::get('/myinterventions', [InterventionController::class, 'getInterventionsByUser']);
 });
