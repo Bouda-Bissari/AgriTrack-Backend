@@ -14,9 +14,28 @@ class InterventionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index() //Affiche la liste des interventions à faire aux travailleurs
     {
-        //
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non connecté.'], 401);
+        }
+
+        if ($user->role !== 'worker') {
+            return response()->json(['message' => 'Accès interdit. Seuls les travailleurs peuvent voir les interventions à faire.'], 403);
+        }
+
+        $interventions = Intervention::where('isDone', false)->get();
+
+        if ($interventions->isEmpty()) {
+            return response()->json(['message' => 'Aucune intervention en attente trouvée.'], 404);
+        }
+
+        return response()->json([
+            'message' => 'Liste des interventions à faire récupérée avec succès.',
+            'data' => $interventions
+        ], 200);
     }
 
     /**
