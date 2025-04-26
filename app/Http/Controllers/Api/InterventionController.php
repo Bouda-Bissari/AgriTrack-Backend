@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddInterventionRequest;
+use App\Http\Requests\UpdateInterventionRequest;
 use App\Models\Intervention;
 use App\Models\Land;
 use Illuminate\Http\Request;
@@ -84,9 +85,40 @@ class InterventionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateInterventionRequest $request, int $id)
     {
-        //
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non connecté.'], 401);
+        }
+
+        if ($user->role !== 'landOwner') {
+            return response()->json(['message' => 'Accès interdit. Seul un propriétaire peut modifier une intervention.'], 403);
+        }
+
+        $intervention = Intervention::find($id);
+
+        if (!$intervention) {
+            return response()->json(['message' => 'Intervention non trouvée.'], 404);
+        }
+
+        if ($intervention->land->user_id !== $user->id) {
+            return response()->json(['message' => 'Vous ne pouvez modifier que vos propres interventions.'], 403);
+        }
+
+        if ($intervention->isDone) {
+            return response()->json(['message' => 'Impossible de modifier une intervention déjà terminée.'], 403);
+        }
+
+        $validated = $request->validated();
+
+        $intervention->update($validated);
+
+        return response()->json([
+            'message' => 'Intervention modifiée avec succès.',
+            'data' => $intervention
+        ], 200);
     }
 
     /**
