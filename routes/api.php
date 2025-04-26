@@ -33,4 +33,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/interventionstodo', [InterventionController::class, 'index']);
     Route::put('/intervention/{id}', [InterventionController::class, 'update']);
     Route::delete('/intervention/{id}', [InterventionController::class, 'destroy']);
+    Route::get('/intervention/{id}', [InterventionController::class, 'show']);
 });
