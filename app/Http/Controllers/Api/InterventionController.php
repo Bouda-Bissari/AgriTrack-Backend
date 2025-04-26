@@ -124,9 +124,31 @@ class InterventionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non connecté.'], 401);
+        }
+
+        if ($user->role !== 'landOwner') {
+            return response()->json(['message' => 'Accès interdit. Seul un propriétaire peut supprimer une intervention.'], 403);
+        }
+
+        $intervention = Intervention::find($id);
+
+        if (!$intervention) {
+            return response()->json(['message' => 'Intervention non trouvée.'], 404);
+        }
+
+        if ($intervention->land->user_id !== $user->id) {
+            return response()->json(['message' => 'Vous ne pouvez supprimer que vos propres interventions.'], 403);
+        }
+
+        $intervention->delete();
+
+        return response()->json(['message' => 'Intervention supprimée avec succès.'], 200);
     }
 
     /**
