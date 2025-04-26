@@ -77,9 +77,38 @@ class InterventionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
-        //
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non connecté.'], 401);
+        }
+
+        $intervention = Intervention::with('land')->find($id);
+
+        if (!$intervention) {
+            return response()->json(['message' => 'Intervention non trouvée.'], 404);
+        }
+
+        if ($user->role === 'landOwner') {
+            // Vérifie que l'intervention appartient bien au landOwner
+            if ($intervention->land->user_id !== $user->id) {
+                return response()->json(['message' => 'Accès interdit.'], 403);
+            }
+        } elseif ($user->role === 'worker') {
+            // les workers ne voient que les interventions non terminées
+            if ($intervention->isDone) {
+                return response()->json(['message' => 'Intervention déjà terminée.'], 403);
+            }
+        } else {
+            return response()->json(['message' => 'Accès interdit.'], 403);
+        }
+
+        return response()->json([
+            'message' => 'Intervention récupérée avec succès.',
+            'data' => $intervention
+        ], 200);
     }
 
     /**
