@@ -77,4 +77,34 @@ class InterventionController extends Controller
     {
         //
     }
+
+    /**
+     * Récupérer toutes les interventions créées par l'utilisateur connecté.
+     */
+    public function getInterventionsByUser()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non connecté.'], 401);
+        }
+
+        if ($user->role !== 'landOwner') {
+            return response()->json(['message' => 'Accès interdit. Seul un proprietaire de terrain peut voir ses interventions.'], 403);
+        }
+
+        // Récupérer toutes les interventions où les terrains appartiennent à cet utilisateur
+        $interventions = Intervention::whereHas('land', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+
+        if ($interventions->isEmpty()) {
+            return response()->json(['message' => 'Aucune intervention trouvée pour cet utilisateur.'], 404);
+        }
+
+        return response()->json([
+            'message' => 'Liste des interventions récupérées avec succès.',
+            'data' => $interventions
+        ], 200);
+    }
 }
