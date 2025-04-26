@@ -31,4 +31,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/intervention', [InterventionController::class, 'store']);
     Route::get('/myinterventions', [InterventionController::class, 'getInterventionsByUser']);
     Route::get('/interventionstodo', [InterventionController::class, 'index']);
+    Route::delete('/intervention/{id}', [InterventionController::class, 'destroy']);
 });
