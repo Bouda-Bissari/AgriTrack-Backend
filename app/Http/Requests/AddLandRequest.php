@@ -48,4 +48,40 @@ class AddLandRequest extends FormRequest
             ],
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'user_id.required' => 'L\'identifiant de l\'utilisateur est requis.',
+            'user_id.exists' => 'L\'utilisateur sélectionné est invalide.',
+
+            'name.required' => 'Le nom du terrain est requis.',
+            'name.max' => 'Le nom du terrain ne doit pas dépasser 50 caractères.',
+
+            'city.required' => 'La ville est requise.',
+            'city.max' => 'Le nom de la ville ne doit pas dépasser 50 caractères.',
+
+            'area.required' => 'La superficie est requise.',
+            'area.numeric' => 'La superficie doit être un nombre.',
+            'area.min' => 'La superficie doit être supérieure ou égale à 0.',
+
+            'cultureType.required' => 'Le type de culture est requis.',
+            'cultureType.max' => 'Le type de culture ne doit pas dépasser 150 caractères.',
+
+            'latitude.required' => 'La latitude est requise.',
+            'latitude.numeric' => 'La latitude doit être un nombre.',
+            'latitude.between' => 'La latitude doit être comprise entre -90 et 90.',
+
+            'longitude.required' => 'La longitude est requise.',
+            'longitude.numeric' => 'La longitude doit être un nombre.',
+            'longitude.between' => 'La longitude doit être comprise entre -180 et 180.',
+
+            'statut.required' => 'Le statut est requis.',
+            'statut.in' => 'Le statut doit être : En culture, Récolte ou En jachère.',
+
+            'ownershipdoc.required' => 'Le document de propriété est requis.',
+            'ownershipdoc.file' => 'Le document de propriété doit être un fichier.',
+            'ownershipdoc.mimes' => 'Le document doit être un fichier PDF.',
+            'ownershipdoc.max' => 'Le document ne doit pas dépasser 5 Mo.',
+        ];
+    }
 }
