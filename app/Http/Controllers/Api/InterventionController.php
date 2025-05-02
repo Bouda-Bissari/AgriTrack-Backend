@@ -183,30 +183,110 @@ class InterventionController extends Controller
     /**
      * Récupérer toutes les interventions créées par l'utilisateur connecté.
      */
-    public function getInterventionsByUser()
+    public function getInterventionsByUser(Request $request)
     {
         $user = Auth::user();
-
+    
         if (!$user) {
             return response()->json(['message' => 'Utilisateur non connecté.'], 401);
         }
-
+    
         if ($user->role !== 'landOwner') {
-            return response()->json(['message' => 'Accès interdit. Seul un proprietaire de terrain peut voir ses interventions.'], 403);
+            return response()->json(['message' => 'Accès interdit. Seul un propriétaire de terrain peut voir ses interventions.'], 403);
         }
-
-        // Récupérer toutes les interventions où les terrains appartiennent à cet utilisateur
-        $interventions = Intervention::whereHas('land', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->get();
-
-        if ($interventions->isEmpty()) {
-            return response()->json(['message' => 'Aucune intervention trouvée pour cet utilisateur.'], 404);
+    
+        $query = Intervention::whereHas('land', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        });
+    
+        // Filtres dynamiques
+        if ($request->filled('title')) {
+            $query->where('title', 'like', '%' . $request->input('title') . '%');
         }
-
+    
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->input('start_date'));
+        }
+    
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->input('end_date'));
+        }
+    
+        $interventions = $query->orderBy('created_at', 'desc')->paginate(10);
+    
         return response()->json([
             'message' => 'Liste des interventions récupérées avec succès.',
             'data' => $interventions
         ], 200);
     }
+
+/**
+ * Récupérer toutes les interventions pour un terrain spécifique.
+ */
+    public function getInterventionsByLand($land_id)
+{
+    // Vérifier que l'utilisateur est connecté
+    $user = Auth::user();
+
+    if (!$user) {
+        return response()->json(['message' => 'Utilisateur non connecté.'], 401);
+    }
+
+    // Vérifier que l'utilisateur est propriétaire du terrain
+    $land = Land::find($land_id);
+
+    if (!$land) {
+        return response()->json(['message' => 'Terrain introuvable.'], 404);
+    }
+
+    if ($land->user_id !== $user->id) {
+        return response()->json(['message' => 'Accès interdit. Vous n\'êtes pas le propriétaire de ce terrain.'], 403);
+    }
+
+    // Récupérer les interventions pour ce terrain spécifique
+    $interventions = Intervention::where('land_id', $land_id)->paginate(1);
+
+    if ($interventions->isEmpty()) {
+        return response()->json(['message' => 'Aucune intervention trouvée pour ce terrain.'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Liste des interventions récupérées avec succès.',
+        'data' => $interventions
+    ], 200);
+}
+/**
+ * Mettre à jour le statut d'une intervention (isDone).
+ */
+
+public function updateStatus(Request $request, $id)
+{
+    // Validation directe du champ 'isDone'
+    $request->validate([
+        'isDone' => 'required|boolean',
+    ], [
+        'isDone.required' => 'Le champ "isDone" est requis.',
+        'isDone.boolean' => 'Le champ "isDone" doit être un booléen.',
+    ]);
+
+    // Trouver l'intervention par son ID
+    $intervention = Intervention::find($id);
+
+    if (!$intervention) {
+        return response()->json([
+            'message' => 'Intervention introuvable.',
+        ], 404);
+    }
+
+    // Mettre à jour le status de 'isDone'
+    $intervention->isDone = $request->input('isDone');
+    $intervention->save();
+
+    return response()->json([
+        'message' => 'Statut de l\'intervention mis à jour avec succès.',
+        'data' => $intervention,
+    ]);
+}
+
+
 }

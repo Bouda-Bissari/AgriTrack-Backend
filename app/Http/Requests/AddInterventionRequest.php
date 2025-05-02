@@ -21,15 +21,27 @@ class AddInterventionRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => 'required|string|max:255',
-            'type' => 'required|required|in:Semis,Arrosage,Fertilisation,Recolte,Traitement',
+            'type' => 'required|in:Semis,Arrosage,Fertilisation,Recolte,Traitement',
             'isDone' => 'nullable|boolean',
-            'productQuantity' => 'required|numeric|min:0',
             'description' => 'required|string',
             'land_id' => 'required|exists:lands,id',
         ];
+
+        if (in_array($this->input('type'), ['Semis', 'Fertilisation', 'Traitement'])) {
+            $rules['quantity'] = 'required|numeric|min:0';
+            $rules['unit'] = 'required|string|max:50';
+            $rules['product_name'] = 'required|string|max:255';
+        } else {
+            $rules['quantity'] = 'nullable|numeric|min:0';
+            $rules['unit'] = 'nullable|string|max:50';
+            $rules['product_name'] = 'nullable|string|max:255';
+        }
+
+        return $rules;
     }
+
     public function messages(): array
     {
         return [
@@ -42,14 +54,22 @@ class AddInterventionRequest extends FormRequest
 
             'isDone.boolean' => 'Le champ "isDone" doit être un booléen.',
 
-            'productQuantity.required' => 'La quantité de produit est requise.',
-            'productQuantity.numeric' => 'La quantité de produit doit être un nombre.',
-            'productQuantity.min' => 'La quantité de produit ne peut pas être négative.',
+            'quantity.required' => 'La quantité est requise pour ce type d\'intervention.',
+            'quantity.numeric' => 'La quantité doit être un nombre.',
+            'quantity.min' => 'La quantité ne peut pas être négative.',
+
+            'unit.required' => 'L\'unité est requise pour ce type d\'intervention.',
+            'unit.string' => 'L\'unité doit être une chaîne de caractères.',
+            'unit.max' => 'L\'unité ne doit pas dépasser 50 caractères.',
+
+            'product_name.required' => 'Le nom du produit est requis pour ce type d\'intervention.',
+            'product_name.string' => 'Le nom du produit doit être une chaîne de caractères.',
+            'product_name.max' => 'Le nom du produit ne doit pas dépasser 255 caractères.',
 
             'description.required' => 'La description est requise.',
             'description.string' => 'La description doit être une chaîne de caractères.',
 
-            'land_id.required' => 'Le champ terrain (land_id) est requis.',
+            'land_id.required' => 'Le terrain est requis.',
             'land_id.exists' => 'Le terrain sélectionné est invalide ou n\'existe pas.',
         ];
     }

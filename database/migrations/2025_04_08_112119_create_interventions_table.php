@@ -16,7 +16,11 @@ return new class extends Migration
             $table->string('title');
             $table->enum('type', ['Semis', 'Arrosage', 'Fertilisation', 'Recolte', 'Traitement']);
             $table->boolean('isDone')->default(false);
-            $table->float('productQuantity');
+            
+            $table->float('quantity')->nullable(); // Quantité utilisée (ex: 50 kg)
+            $table->string('unit')->nullable();    // Unité (ex: kg, L, m3)
+            $table->string('product_name')->nullable(); // Produit utilisé (ex: semence de blé, engrais NPK, pesticide XYZ)
+
             $table->text('description');
             $table->foreignId('land_id')->constrained('lands')->onDelete('cascade');
             $table->timestamps();

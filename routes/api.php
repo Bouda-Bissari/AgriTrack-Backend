@@ -28,8 +28,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Interventions Endpoints
     Route::post('/intervention', [InterventionController::class, 'store']);
     Route::get('/myinterventions', [InterventionController::class, 'getInterventionsByUser']);
+    Route::get('/interventions/land/{landId}', [InterventionController::class, 'getInterventionsByLand']);
+    Route::post('/update/status/{id}', [InterventionController::class, 'updateStatus']);
     Route::get('/interventionstodo', [InterventionController::class, 'index']);
     Route::get('/intervention/{id}', [InterventionController::class, 'show']);
-    Route::put('/intervention/{id}', [InterventionController::class, 'update']);
+    Route::post('/intervention/{id}', [InterventionController::class, 'update']);
     Route::delete('/intervention/{id}', [InterventionController::class, 'destroy']);
 });
