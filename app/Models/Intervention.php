@@ -12,8 +12,9 @@ class Intervention extends Model
         'title',
         'type',
         'isDone',
-        'interventionDate',
-        'productQuantity',
+        'quantity',
+        'unit',
+        'product_name',
         'description',
         'land_id'
     ];
