@@ -16,19 +16,48 @@ class LandController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-
+    
         if (!$user) {
             return response()->json(['message' => 'Utilisateur non connecté.'], 401);
         }
+    
+        $query = Land::where('user_id', $user->id);
+    
+        // Filtres dynamiques
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        }
+    
+        if ($request->filled('culture_type')) {
+            $query->where('cultureType', $request->input('culture_type'));
+        }
+    
+        if ($request->filled('land_status')) {
+            $query->where('statut', $request->input('land_status'));
+        }
+    
+        if ($request->filled('city')) {
+            $query->where('city', 'like', '%' . $request->input('city') . '%');
+        }
 
-        $lands = Land::where('user_id', $user->id)->get(); // Récupérer les parcelles de l'utilisateur connecté
-
+        $sortBy = $request->input('sort_by', 'created'); 
+    if ($sortBy === 'updated') {
+        $query->latest('updated_at');
+    } else {
+        $query->latest('created_at');
+    }
+    
+        $lands = $query->paginate(10);
+    
         return response()->json([
-            'message' => 'Parcelles de l’utilisateur récupérées avec succès.',
-            'data' => $lands
+            'message' => 'Parcelles de l\'utilisateur récupérées avec succès.',
+            'data' => $lands->items(),
+            'total' => $lands->total(),
+            'current_page' => $lands->currentPage(),
+            'last_page' => $lands->lastPage(),
         ]);
     }
 
