@@ -1,9 +1,5 @@
-Voici le README mis à jour avec les commandes Docker correctes basées sur votre configuration :
-
----
-
 <p align="center">
-  <img src="public/image.png" width="500" alt="AgriTrack API Banner" />
+  <img src="public/image.png"  alt="AgriTrack API Banner" />
 </p>
 
 <h1 align="center">🌾 AgriTrack API</h1>
