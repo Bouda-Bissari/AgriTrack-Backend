@@ -1,66 +1,211 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Voici le README mis à jour avec les commandes Docker correctes basées sur votre configuration :
+
+---
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/image.png" width="500" alt="AgriTrack API Banner" />
 </p>
 
-## About Laravel
+<h1 align="center">🌾 AgriTrack API</h1>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  API Laravel 12 pour la gestion des activités agricoles : parcelles, cultures, interventions, utilisateurs et plus.
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 À propos
 
-## Learning Laravel
+AgriTrack est une plateforme de gestion agricole qui permet aux utilisateurs de gérer leurs terres, de suivre les interventions agricoles, de collaborer avec des travailleurs et d'analyser les performances grâce à des tableaux de bord.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Cette API est développée avec **Laravel 12** et conteneurisée avec **Docker** pour faciliter le déploiement et le développement. L'authentification est assurée par **Laravel Sanctum**.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🧪 Technologies utilisées
 
-## Laravel Sponsors
+- Laravel 12
+- PHP 8.3+
+- MySQL
+- NGINX (configuration dans `docker/`)
+- Docker & Docker Compose
+- Laravel Sanctum
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## ⚙️ Démarrage rapide avec Docker
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 1. Cloner le projet
 
-## Contributing
+```bash
+git clone https://github.com/votre-utilisateur/AgriTrack-Backend.git
+cd AgriTrack-Backend
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Configurer l'environnement
 
-## Code of Conduct
+```bash
+cp .env.example .env
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Éditez le fichier `.env` pour configurer les variables de base de données :
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=rootpassword
+```
 
-## Security Vulnerabilities
+### 3. Démarrer les conteneurs
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+docker-compose up -d --build
+```
 
-## License
+### 4. Installer les dépendances et configurer l'application
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+docker exec -it laravel_app composer install
+docker exec -it laravel_app php artisan key:generate
+docker exec -it laravel_app php artisan storage:link
+```
+
+### 5. Exécuter les migrations et les seeders
+
+```bash
+docker exec -it laravel_app php artisan migrate --seed
+```
+
+---
+
+## 🌱 Accès aux services
+
+- **API** : http://localhost:8000
+- **PHPMyAdmin** : http://localhost:8080
+  - Serveur: `db`
+  - Utilisateur: `root`
+  - Mot de passe: `rootpassword`
+
+---
+
+## 🛠 Commandes Docker utiles
+
+| Commande | Description |
+|----------|-------------|
+| `docker-compose up -d` | Démarrer les conteneurs en arrière-plan |
+| `docker-compose down` | Arrêter les conteneurs |
+| `docker exec -it laravel_app bash` | Accéder au conteneur de l'application |
+| `docker-compose logs -f` | Voir les logs en temps réel |
+
+---
+
+## 🌱 Données de test
+
+Le seeder inclut :
+- 1 utilisateur admin (`admin@agritrack.com` / mot de passe : `password`)
+- 10 parcelles fictives
+- 20 cultures associées
+- 50 interventions aléatoires
+
+Voici les commandes pour gérer les seeders **avec et sans Docker** :
+
+---
+
+## 🌱 **Avec Docker** (pour votre configuration)
+
+### 1. Exécuter tous les seeders (après migrations)
+```bash
+docker exec -it laravel_app php artisan db:seed
+```
+
+### 2. Exécuter un seeder spécifique
+```bash
+docker exec -it laravel_app php artisan db:seed --class=UserSeeder
+```
+
+### 3. Réinitialiser complètement la base (DROP + recréer + seed)
+```bash
+docker exec -it laravel_app php artisan migrate:fresh --seed
+```
+
+### 4. Lister les seeders disponibles
+```bash
+docker exec -it laravel_app php artisan db:seed --list
+```
+
+---
+
+## 💻 **Sans Docker** (installation locale)
+
+### 1. Exécuter tous les seeders
+```bash
+php artisan db:seed
+```
+
+### 2. Exécuter un seeder spécifique
+```bash
+php artisan db:seed --class=UserSeeder
+```
+
+### 3. Réinitialiser complètement la base
+```bash
+php artisan migrate:fresh --seed
+```
+
+### 4. Générer un nouveau seeder
+```bash
+php artisan make:seeder NouveauSeeder
+```
+
+---
+
+## 🔄 **Commandes communes aux deux méthodes**
+
+| Action | Docker | Sans Docker |
+|--------|--------|-------------|
+| Lancer les seeders | `docker exec -it laravel_app php artisan db:seed` | `php artisan db:seed` |
+| Seed spécifique | `docker exec -it laravel_app php artisan db:seed --class=X` | `php artisan db:seed --class=X` |
+| Reset complet | `docker exec -it laravel_app php artisan migrate:fresh --seed` | `php artisan migrate:fresh --seed` |
+| Créer un seeder | `docker exec -it laravel_app php artisan make:seeder X` | `php artisan make:seeder X` |
+
+---
+
+## 📦 **Seeders par défaut dans AgriTrack**
+1. `DatabaseSeeder` (parent)
+2. `UserSeeder` (admin@agritrack.com / password)
+3. `ParcelleSeeder` (10 parcelles)
+4. `CultureSeeder` (20 cultures)
+5. `InterventionSeeder` (50 interventions)
+
+---
+
+## ⚠️ **Attention**
+- Avec Docker, assurez-vous que les conteneurs sont en marche (`docker-compose ps`)
+- Sans Docker, vérifiez que `.env` est bien configuré pour votre base de données locale
+
+
+
+---
+
+## 🔍 Structure des conteneurs
+
+| Service | Nom du conteneur | Port | Description |
+|---------|-----------------|------|-------------|
+| App | `laravel_app` | - | Conteneur PHP/Laravel |
+| Web | `laravel_webserver` | 8000 | Serveur Nginx |
+| DB | `laravel_db` | 3306 | Base de données MySQL |
+| PHPMyAdmin | `laravel_phpmyadmin` | 8080 | Interface d'administration MySQL |
+
+---
+
+## 🚨 Dépannage
+
+Si vous rencontrez des problèmes :
+1. Vérifiez que les ports 8000 et 8080 sont libres
+2. Relancez les conteneurs avec `docker-compose down && docker-compose up -d`
+3. Consultez les logs avec `docker-compose logs`
+
+---
+
