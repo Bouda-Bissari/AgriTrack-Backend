@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('firstName');
             $table->string('lastName');
             $table->string('bio')->nullable();
+            $table->string('profilImage')->nullable();
             $table->string('email')->unique();
             $table->string('phoneNumber')->unique()->nullable();
-            $table->enum('role', ['landOwner', 'worker', 'admin']);
+            $table->enum('role', ['landOwner', 'admin'])->default('landOwner');
             $table->timestamp('email_verified_at')->nullable();
             $table->boolean('is_blocked')->default(false);
             $table->string('password');

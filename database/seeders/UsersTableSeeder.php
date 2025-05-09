@@ -14,7 +14,6 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        // Liste de noms togolais pour les utilisateurs
         $firstNames = [
             'Kodjo', 'Kokou', 'Koffi', 'Komlan', 'Kossi', 'Komi', 'Kwame', 'Kwasi',
             'Abla', 'Afi', 'Akossiwa', 'Ama', 'Ami', 'Amivi', 'Adjoa', 'Ayele',
@@ -29,21 +28,20 @@ class UsersTableSeeder extends Seeder
             'Soglo', 'Tagba', 'Tamakloé', 'Wilson', 'Zinzindohoue', 'Zotchi'
         ];
 
-        // Création de 25 utilisateurs (15 landOwner, 5 admin, 5 worker)
+        // Création de 15 landOwner et 5 admin (plus de worker)
         $roles = [
-            'landOwner' => 15,
+            'landOwner' => 20,
             'admin' => 5,
-            'worker' => 10
         ];
 
         $userCount = 1;
-        
+
         foreach ($roles as $role => $count) {
             for ($i = 0; $i < $count; $i++) {
                 $firstName = $firstNames[array_rand($firstNames)];
                 $lastName = $lastNames[array_rand($lastNames)];
                 $email = strtolower($firstName . '.' . $lastName . $userCount . '@example.com');
-                
+
                 DB::table('users')->insert([
                     'firstName' => $firstName,
                     'lastName' => $lastName,
@@ -51,6 +49,7 @@ class UsersTableSeeder extends Seeder
                     'email' => $email,
                     'phoneNumber' => '+228' . rand(90, 99) . rand(100000, 999999),
                     'role' => $role,
+                    'profilImage' => 'https://i.pinimg.com/736x/ad/39/73/ad39733a48816a395f1a113a4c9683ae.jpg', 
                     'email_verified_at' => now(),
                     'is_blocked' => false,
                     'password' => Hash::make('password'),
@@ -58,7 +57,7 @@ class UsersTableSeeder extends Seeder
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
-                
+
                 $userCount++;
             }
         }

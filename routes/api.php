@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\AdminController;
 use App\Http\Controllers\Api\InterventionController;
 use App\Http\Controllers\Api\LandController;
+use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\UserStatsController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -20,6 +21,13 @@ Route::get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum'])->group(function () {
     // Authentication
     Route::post('/logout', [AuthController::class, 'logout']);
+
+        // User profile routes
+
+    Route::get('/user', [UserController::class, 'getCurrentUser']);
+    Route::get('/user/{id}', [UserController::class, 'getUser']);
+    Route::post('/user/update-profile', [UserController::class, 'updateProfile']);
+    Route::post('/user/update-password', [UserController::class, 'updatePassword']);
 
 
     Route::get('/users/{user}/stats', [UserStatsController::class, 'getUserStats']);

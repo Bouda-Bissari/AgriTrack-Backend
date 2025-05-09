@@ -18,7 +18,7 @@ class RegisterRequest extends FormRequest
             'lastName'                   => 'required|string|max:255',
             'email'                 => 'required|string|email|max:255|unique:users',
             'password'              => 'required|string|min:4',
-            'role'                 => 'required|in:landOwner,worker',
+            // 'role'                 => 'required|in:landOwner,worker',
         ];
     }
 
@@ -42,8 +42,7 @@ class RegisterRequest extends FormRequest
             'email.email'           => "L'adresse e-mail doit être valide.",
             'email.max'             => "L'adresse e-mail ne doit pas dépasser 255 caractères.",
             'email.unique'          => "Cette adresse e-mail est déjà utilisée.",
-            'role.required'         => "Le rôle est obligatoire.",
-            'role.in'               => "Le rôle doit être soit 'landOwner' soit 'worker'.",
+           
 
             'password.required'     => "Le mot de passe est obligatoire.",
             'password.string'       => "Le mot de passe doit être une chaîne de caractères.",
